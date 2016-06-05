@@ -1,0 +1,21 @@
+kafka:
+  image: spotify/kafka
+  ports:
+    - "9092:9092"
+
+bot:
+  build: .
+  dockerfile: Dockerfile-bot
+  ports:
+    - "8000:8000"
+  command: /root/miniconda3/bin/python /bot/consumer.py
+  links:
+    - producer
+    - kafka
+
+producer:
+  build: .
+  dockerfile: Dockerfile-bot
+  command: /root/miniconda3/bin/python /bot/producer.py
+  links:
+    - kafka
