@@ -3,10 +3,12 @@ import logging
 import json
 from kafka import SimpleProducer, KafkaClient
 from slackclient import SlackClient
+from constants import BOT_ID, SLACK_TOKEN, PY_SLACK
+import re
 
 PRODUCER = None
 
-def init_kafka_producer():
+def init_producer():
     global PRODUCER
     start = time.time()
     end = start + 60
@@ -17,7 +19,6 @@ def init_kafka_producer():
             client = KafkaClient('kafka:9092')
             client.ensure_topic_exists('messages')
             PRODUCER = SimpleProducer(client)
-            logging.info("RETURNING: {}".format(PRODUCER))
             return PRODUCER
         except Exception as e:
             exception = e
@@ -28,21 +29,25 @@ def init_kafka_producer():
 def main():
     global PRODUCER
     try:
-        logging.info("Initializing Producer")
-        PRODUCER = init_kafka_producer()
-        sc = SlackClient('xoxb-48248869860-FaqrZbiGJOqSHV1V5XNOJ48B')
+        logging.debug("Initializing Producer")
+        p = re.compile(r'(<@.\w+>)')
+        PRODUCER = init_producer()
+        sc = SlackClient(SLACK_TOKEN)
         if sc.rtm_connect():
             while True:
                 try:
                     messages = sc.rtm_read()
-                    if messages:
-                        for message in messages:
-                            if message.get('type') == 'message' \
-                                and 'text' in message:
-                                keys = ['tagged_users_ids', 'message']
-                                m = json.dumps({message.get(k) for k in keys}).encode('utf-8')
+                    for message in messages:
+                        if message.get('type') == 'message' \
+                            and message.get('user') != BOT_ID \
+                            and BOT_ID in message.get('text', ''):
+                            m = json.dumps(
+                                {'user': message.get('user'),
+                                 'text': p.sub('', message.get('text')),
+                                 'channel': message.get('channel')}).encode('utf-8')
 
-                                PRODUCER.send_messages(m, 'messages')
+                            logging.debug('Producer recieved: {}'.format(m))
+                            PRODUCER.send_messages('messages', m)
                     time.sleep(0.01)
                 except Exception as e:
                     logging.exception(e)

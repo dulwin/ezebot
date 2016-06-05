@@ -1,4 +1,4 @@
-kafka-python==0.9.5
+kafka-python==1.2.1
 pyslack-real==0.6.0
 slackclient==1.0.0
 slacker==0.9.9
