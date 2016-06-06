@@ -4,6 +4,7 @@ import json
 from kafka import KafkaConsumer, KafkaClient
 from kafka.common import ConnectionError
 from constants import PY_SLACK, BOT_NAME
+import commands.doorcode as doorcode
 
 
 def init_consumer():
@@ -28,6 +29,7 @@ def main(consumer):
             if m:
                 try:
                     logging.debug("Consumer received: {}".format(m))
+                    print(m)
 
                     # say hello
                     PY_SLACK.chat_post_message(
