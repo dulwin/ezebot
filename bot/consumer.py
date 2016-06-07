@@ -5,7 +5,6 @@ from kafka import KafkaConsumer, KafkaClient
 from kafka.common import ConnectionError
 from constants import PY_SLACK, BOT_NAME
 import commands.util as util
-import re
 
 
 def init_consumer():
