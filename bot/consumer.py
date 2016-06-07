@@ -4,7 +4,8 @@ import json
 from kafka import KafkaConsumer, KafkaClient
 from kafka.common import ConnectionError
 from constants import PY_SLACK, BOT_NAME
-import commands.doorcode
+import commands.util as util
+import re
 
 
 def init_consumer():
@@ -31,18 +32,8 @@ def main(consumer):
                     logging.debug("Consumer received: {}".format(m))
                     # say hello
                     msg = m.get('text')
-                    if 'doorcode' in msg:
-                        PY_SLACK.chat_post_message(
-                            m.get('channel'),
-                            'The doorcode is: `{0}`!'.format(123456),
-                            username=BOT_NAME
-                        )
-                    else:
-                        PY_SLACK.chat_post_message(
-                            m.get('channel'),
-                            'Hi <@{}>!'.format(m.get('user')),
-                            username=BOT_NAME
-                        )   
+                    res = util.find_match(msg)
+                    res.post_message(m)
                 except Exception as e:
                     logging.exception(e)
 
