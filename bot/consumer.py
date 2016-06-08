@@ -29,7 +29,6 @@ def main(consumer):
             if m:
                 try:
                     logging.debug("Consumer received: {}".format(m))
-                    # say hello
                     msg = m.get('text')
                     res = util.find_match(msg)
                     res.post_message(m)
