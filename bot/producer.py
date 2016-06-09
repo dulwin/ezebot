@@ -47,7 +47,12 @@ def main():
                                  'channel': message.get('channel')}).encode('utf-8')
 
                             logging.debug('Producer recieved: {}'.format(m))
-                            PRODUCER.send_messages('messages', m)
+                            try:
+                                PRODUCER.send_messages('messages', m)
+                            except LeaderNotAvailableError:
+                                time.sleep(1)
+                                PRODUCER.send_messages('messages', m)
+                            #PRODUCER.send_messages('messages', m)
                     time.sleep(0.01)
                 except Exception as e:
                     logging.exception(e)
