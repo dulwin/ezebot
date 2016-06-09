@@ -25,3 +25,4 @@ To run:
 * wit.ai integration
 * Style guide for contributions
 * AWS Micro
+* Don't forget to include -help
