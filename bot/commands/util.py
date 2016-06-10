@@ -4,7 +4,7 @@ from commands.doorcode import Doorcode
 from commands.base_command import Base_Command
 from constants import PY_SLACK, BOT_NAME
 
-doorcode_pattern = re.compile('doorcode.*[0-9]{3}')
+doorcode_pattern = re.compile('(doorcode|door code)')
 
 """
 Until better design is created, this function is designed 
