@@ -1,0 +1,36 @@
+zookeeper:
+  image: wurstmeister/zookeeper
+  ports:
+    - "2181"
+  restart: always
+
+kafka:
+  image: wurstmeister/kafka
+  ports:
+    - "9092"
+  links:
+    - zookeeper:zk
+  environment:
+    KAFKA_ADVERTISED_HOST_NAME: "192.168.99.100"
+    KAFKA_CREATE_TOPICS: "messages:1:1"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+  restart: always
+
+
+bot:
+  build: .
+  dockerfile: Dockerfile-bot
+  ports:
+    - "8000:8000"
+  command: /root/miniconda3/bin/python /bot/consumer.py
+  links:
+    - producer
+    - kafka
+
+producer:
+  build: .
+  dockerfile: Dockerfile-bot
+  command: /root/miniconda3/bin/python /bot/producer.py
+  links:
+    - kafka
