@@ -27,6 +27,7 @@ func main(){
 func initialize(logger *log.Logger) *slack.Client  {
   key := getKey(logger)
   api := slack.New(key)
+  api.SetDebug(true)
   slack.SetLogger(logger)
   logger.Print("Initiated slack client")
   return api
@@ -36,7 +37,9 @@ func getKey(logger *log.Logger) string {
   data, err := ioutil.ReadFile("keys/api_key.txt")
   check(err)
   logger.Print("Got slack key")
-  return string(data)
+  key := string(data)
+  length := len(key)
+  return key[:length - 1]
 }
 
 func check(e error) {
