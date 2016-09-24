@@ -1,6 +1,13 @@
 {
 	"comment": "",
 	"ignore": "test",
-	"package": [],
+	"package": [
+		{
+			"checksumSHA1": "akn3XR1kSjvell/LbqYkJMRjZrY=",
+			"path": "github.com/nlopes/slack",
+			"revision": "8b6fdb00c8635e19a736c83310e49951fec6802b",
+			"revisionTime": "2016-09-20T17:39:16Z"
+		}
+	],
 	"rootPath": "ezebot"
 }
