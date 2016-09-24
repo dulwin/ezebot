@@ -7,6 +7,12 @@
 			"path": "github.com/nlopes/slack",
 			"revision": "8b6fdb00c8635e19a736c83310e49951fec6802b",
 			"revisionTime": "2016-09-20T17:39:16Z"
+		},
+		{
+			"checksumSHA1": "likOl7O0BJntqagR050kkOBuY4o=",
+			"path": "golang.org/x/net/websocket",
+			"revision": "f09c4662a0bd6bd8943ac7b4931e185df9471da4",
+			"revisionTime": "2016-09-24T00:10:04Z"
 		}
 	],
 	"rootPath": "ezebot"
