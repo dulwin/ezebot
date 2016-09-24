@@ -15,5 +15,6 @@
 			"revisionTime": "2016-09-24T00:10:04Z"
 		}
 	],
-	"rootPath": "ezebot"
+	"rootPath": "ezebot",
+  "heroku.goVerson": "go1.7.1" 
 }
