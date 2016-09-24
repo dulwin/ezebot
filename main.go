@@ -25,7 +25,7 @@ func main(){
 }
 
 func initialize(logger *log.Logger) *slack.Client  {
-  key := getKey(logger)
+  key := os.Getenv("SLACK_KEY")
   api := slack.New(key)
   api.SetDebug(true)
   slack.SetLogger(logger)
