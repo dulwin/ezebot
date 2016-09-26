@@ -4,11 +4,20 @@ import(
   "github.com/nlopes/slack"
   "log"
   "os"
-  "io/ioutil"
   "strings"
   "net/http"
   "fmt"
+  "time"
 )
+
+func initiate_get_request() {
+  resp, err := http.Get(os.Getenv("API_ENDPOINT"))
+  if err != nil {
+    panic(err)
+  }
+  defer resp.Body.Close()
+  time.Sleep(20 * time.Second)
+}
 
 func spawn_server(){
   port := ":" + os.Getenv("PORT")
@@ -25,6 +34,7 @@ func main(){
   api := initialize(logger)
   rtm := api.NewRTM()
   go spawn_server()
+  go initiate_get_request()
   go rtm.ManageConnection()
   for {
     select {
@@ -43,15 +53,6 @@ func initialize(logger *log.Logger) *slack.Client  {
   slack.SetLogger(logger)
   logger.Print("Initiated slack client")
   return api
-}
-
-func getKey(logger *log.Logger) string {
-  data, err := ioutil.ReadFile("keys/api_key.txt")
-  check(err)
-  logger.Print("Got slack key")
-  key := string(data)
-  length := len(key)
-  return key[:length - 1]
 }
 
 func check(e error) {
