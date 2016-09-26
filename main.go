@@ -8,10 +8,19 @@ import(
   "net/http"
   "fmt"
   "time"
+  "io/ioutil"
 )
 
+var production bool
+
 func initiate_get_request() {
-  resp, err := http.Get(os.Getenv("API_ENDPOINT"))
+  var resp *http.Response
+  var err error
+  if (production){
+    resp, err = http.Get(os.Getenv("API_ENDPOINT"))
+  } else {
+    resp, err = http.Get("http://uw-ezebot.herokuapp.com")
+  }
   if err != nil {
     panic(err)
   }
@@ -30,6 +39,8 @@ func web_handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main(){
+  production = os.Getenv("ENVIRONMENT") == "production"
+
   logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
   api := initialize(logger)
   rtm := api.NewRTM()
@@ -48,11 +59,25 @@ func main(){
 }
 
 func initialize(logger *log.Logger) *slack.Client  {
-  key := os.Getenv("SLACK_KEY")
+  var key string
+  if (production){
+    key = os.Getenv("SLACK_KEY")
+  } else {
+    key = getKey(logger)
+  }
   api := slack.New(key)
   slack.SetLogger(logger)
   logger.Print("Initiated slack client")
   return api
+}
+
+func getKey(logger *log.Logger) string {
+  data, err := ioutil.ReadFile("keys/api_key.txt")
+  check(err)
+  logger.Print("Got slack key")
+  key := string(data)
+  length := len(key)
+  return key[:length - 1]
 }
 
 func check(e error) {
