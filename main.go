@@ -28,7 +28,7 @@ func initiate_get_request() {
   time.Sleep(20 * time.Second)
 }
 
-func spawn_server(){
+func spawnServer(){
   port := ":" + os.Getenv("PORT")
   http.HandleFunc("/", web_handler)
   http.ListenAndServe(port, nil)
@@ -44,7 +44,7 @@ func main(){
   logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
   api := initialize(logger)
   rtm := api.NewRTM()
-  go spawn_server()
+  go spawnServer()
   go initiate_get_request()
   go rtm.ManageConnection()
   for {
