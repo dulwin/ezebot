@@ -1,28 +1,9 @@
-# EZEBOT
+# ezebot
 
-Slack integration for UWaterloo ECE'19 Slack team.
+Keys should be in `keys/api_key.txt`
 
-## Running
-After changes made to files:
 ```
-docker-compose build
-```
-
-To run:
-```
-./start_kafka.sh
-./start_bot.sh
+./build
+./target/ezebot
 ```
 
-## Roadmap
-
-### Short Term Goals
-* Add exam info
-* PEP8 Linting
-* Supervisor for logging
-
-### Long Term Goals:
-* wit.ai integration
-* Style guide for contributions
-* AWS Micro
-* Don't forget to include -help

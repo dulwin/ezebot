@@ -1,2 +1,5 @@
 *.pyc
 keys/
+vendor/*/
+target/
+.env
