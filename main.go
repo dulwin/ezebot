@@ -10,26 +10,28 @@ import(
   "time"
 )
 
-func initiate_get_request() {
-  var resp *http.Response
-  var err error
+func initiateGetRequest() {
+  var (
+    resp *http.Response 
+    err error
+  )
   for {
     resp, err = http.Get(os.Getenv("API_ENDPOINT"))
     if err != nil {
       panic(err)
     }
-    defer resp.Body.Close()
+    resp.Body.Close()
     time.Sleep(20 * time.Minute)
   }
 }
 
 func spawnServer(){
   port := ":" + os.Getenv("PORT")
-  http.HandleFunc("/", web_handler)
+  http.HandleFunc("/", webHandler)
   http.ListenAndServe(port, nil)
 }
 
-func web_handler(w http.ResponseWriter, r *http.Request) {
+func webHandler(w http.ResponseWriter, r *http.Request) {
   fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
@@ -38,7 +40,7 @@ func main(){
   api := initialize(logger)
   rtm := api.NewRTM()
   go spawnServer()
-  go initiate_get_request()
+  go initiateGetRequest()
   go rtm.ManageConnection()
   for {
     select {
