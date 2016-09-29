@@ -13,12 +13,14 @@ import(
 func initiate_get_request() {
   var resp *http.Response
   var err error
-  resp, err = http.Get(os.Getenv("API_ENDPOINT"))
-  if err != nil {
-    panic(err)
+  for {
+    resp, err = http.Get(os.Getenv("API_ENDPOINT"))
+    if err != nil {
+      panic(err)
+    }
+    defer resp.Body.Close()
+    time.Sleep(20 * time.Minute)
   }
-  defer resp.Body.Close()
-  time.Sleep(20 * time.Second)
 }
 
 func spawnServer(){
