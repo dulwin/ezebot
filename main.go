@@ -1,76 +1,78 @@
 package main
 
-import(
-  "github.com/nlopes/slack"
-  "log"
-  "os"
-  "strings"
-  "net/http"
-  "fmt"
-  "time"
+import (
+	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
+
+	"github.com/nlopes/slack"
 )
 
 func initiateGetRequest() {
-  var (
-    resp *http.Response 
-    err error
-  )
-  for {
-    resp, err = http.Get(os.Getenv("API_ENDPOINT"))
-    if err != nil {
-      panic(err)
-    }
-    resp.Body.Close()
-    time.Sleep(20 * time.Minute)
-  }
+	var (
+		resp *http.Response
+		err  error
+	)
+	for {
+		resp, err = http.Get(os.Getenv("API_ENDPOINT"))
+		if err != nil {
+			panic(err)
+		}
+		resp.Body.Close()
+		time.Sleep(20 * time.Minute)
+	}
 }
 
-func spawnServer(){
-  port := ":" + os.Getenv("PORT")
-  http.HandleFunc("/", webHandler)
-  http.ListenAndServe(port, nil)
+func spawnServer() {
+	port := ":" + os.Getenv("PORT")
+	http.HandleFunc("/", webHandler)
+	http.ListenAndServe(port, nil)
 }
 
 func webHandler(w http.ResponseWriter, r *http.Request) {
-  fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
+	fmt.Fprintf(w, "Hi there, I love %s!", r.URL.Path[1:])
 }
 
-func main(){
-  logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
-  api := initialize(logger)
-  rtm := api.NewRTM()
-  go spawnServer()
-  go initiateGetRequest()
-  go rtm.ManageConnection()
-  for {
-    select {
-    case msg:= <-rtm.IncomingEvents:
-      switch ev := msg.Data.(type) {
-        case *slack.MessageEvent:
-          go messageHandler(ev, rtm)
-      }
-    }
-  }
+func main() {
+	logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
+	api := initialize(logger)
+	rtm := api.NewRTM()
+	go spawnServer()
+	go initiateGetRequest()
+	go rtm.ManageConnection()
+	for {
+		select {
+		case msg := <-rtm.IncomingEvents:
+			logger.Printf("%+v\n", msg)
+			switch ev := msg.Data.(type) {
+			case *slack.MessageEvent:
+				go messageHandler(ev, rtm)
+			}
+		}
+	}
 }
 
-func initialize(logger *log.Logger) *slack.Client  {
-  var key string
-  key = os.Getenv("SLACK_KEY")
-  logger.Print("KEY: " + key)
-  api := slack.New(key)
-  slack.SetLogger(logger)
-  logger.Print("Initiated slack client")
-  return api
+func initialize(logger *log.Logger) *slack.Client {
+	var key string
+	key = os.Getenv("SLACK_KEY")
+	logger.Print("KEY: " + key)
+	api := slack.New(key)
+	slack.SetLogger(logger)
+	logger.Print("Initiated slack client")
+	return api
 }
 
 func check(e error) {
-  if e != nil{
-    panic(e)
-  }
+	if e != nil {
+		panic(e)
+	}
 }
 
-func messageHandler(event *slack.MessageEvent, rtm *slack.RTM){
-  if strings.Contains(event.Msg.Text, "<@" + rtm.GetInfo().User.ID + ">") {
-    rtm.SendMessage(rtm.NewOutgoingMessage(event.Text, event.Channel))
-  }
+func messageHandler(event *slack.MessageEvent, rtm *slack.RTM) {
+	if strings.Contains(event.Msg.Text, "<@"+rtm.GetInfo().User.ID+">") {
+		rtm.SendMessage(rtm.NewOutgoingMessage("Hi", event.Channel))
+	}
 }

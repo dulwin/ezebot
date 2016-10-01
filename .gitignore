@@ -3,3 +3,4 @@ keys/
 vendor/*/
 target/
 .env
+gin-bin
