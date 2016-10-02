@@ -9,6 +9,9 @@ import (
 	"time"
 
 	"github.com/nlopes/slack"
+
+	"github.com/dulwin/ezebot/nlp"
+	"github.com/dulwin/ezebot/utils"
 )
 
 func initiateGetRequest() {
@@ -18,9 +21,7 @@ func initiateGetRequest() {
 	)
 	for {
 		resp, err = http.Get(os.Getenv("API_ENDPOINT"))
-		if err != nil {
-			panic(err)
-		}
+		utils.CheckError(err)
 		resp.Body.Close()
 		time.Sleep(20 * time.Minute)
 	}
@@ -65,14 +66,10 @@ func initialize(logger *log.Logger) *slack.Client {
 	return api
 }
 
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
 func messageHandler(event *slack.MessageEvent, rtm *slack.RTM) {
 	if strings.Contains(event.Msg.Text, "<@"+rtm.GetInfo().User.ID+">") {
-		rtm.SendMessage(rtm.NewOutgoingMessage("Hi", event.Channel))
+		witResponse := nlp.ProcessMessage(event.Msg.Text)
+		s := fmt.Sprintf("%+v \n", witResponse)
+		rtm.SendMessage(rtm.NewOutgoingMessage(s, event.Channel))
 	}
 }
