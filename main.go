@@ -10,6 +10,7 @@ import (
 
 	"github.com/nlopes/slack"
 
+	"github.com/dulwin/ezebot/db"
 	"github.com/dulwin/ezebot/nlp"
 	"github.com/dulwin/ezebot/utils"
 )
@@ -41,6 +42,7 @@ func main() {
 	logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
 	api := initialize(logger)
 	rtm := api.NewRTM()
+    res = db.GetInstance()
 	go spawnServer()
 	go initiateGetRequest()
 	go rtm.ManageConnection()
