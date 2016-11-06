@@ -9,19 +9,25 @@ import (
     "github.com/dulwin/ezebot/models"
 )
 
-//TODO: Refactor to using classes and type
+type EntityManager struct {
+    manager *gorm.DB
+}
 
-func GetInstance() *gorm.DB {
+func GetInstance() EntityManager {
 	dbName := os.Getenv("DB_NAME")
 	db, err := gorm.Open("sqlite3", dbName)
 	utils.CheckError(err)
-	return db
+	return EntityManager{manager: db}
 }
 
-func Migrate(db *gorm.DB) {
-	db.AutoMigrate(&models.Query{})
+func (e EntityManager) Close() {
+    e.manager.Close()
 }
 
-// func Insert(db *gorm.DB, q *Query) {
-// 	db.Create(q)
-// }
+func (e EntityManager) Migrate() {
+	e.manager.AutoMigrate(&models.Query{})
+}
+
+func (e EntityManager) Insert(q models.Entity) {
+	e.manager.Create(q)
+}

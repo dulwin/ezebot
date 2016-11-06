@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/nlopes/slack"
-	"github.com/jinzhu/gorm"
 
 	"github.com/dulwin/ezebot/db"
 	"github.com/dulwin/ezebot/nlp"
@@ -18,7 +17,7 @@ import (
 
 
 var logger *log.Logger
-var entityManager *gorm.DB
+var entityManager db.EntityManager
 var api *slack.Client
 
 func init() {
@@ -53,7 +52,7 @@ func main() {
 	defer entityManager.Close()
 	rtm := api.NewRTM()
 	entityManager := db.GetInstance()
-	db.Migrate(entityManager)
+	entityManager.Migrate()
 	// q := db.Query{Category: "test_category", Query: "doorcode", Response: "HAHAHAA"}
 	// db.Insert(res, &q)
 	go spawnServer()
