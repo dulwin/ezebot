@@ -9,11 +9,22 @@ import (
 	"time"
 
 	"github.com/nlopes/slack"
+	"github.com/jinzhu/gorm"
 
 	"github.com/dulwin/ezebot/db"
 	"github.com/dulwin/ezebot/nlp"
 	"github.com/dulwin/ezebot/utils"
 )
+
+
+var logger *log.Logger
+var entityManager *gorm.DB
+var api *slack.Client
+
+func init() {
+	logger = log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
+	api = initializeApi()
+}
 
 func initiateGetRequest() {
 	var (
@@ -39,14 +50,12 @@ func webHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	logger := log.New(os.Stdout, "Jarvis: ", log.Lshortfile|log.LstdFlags)
-	api := initialize(logger)
+	defer entityManager.Close()
 	rtm := api.NewRTM()
-    res := db.GetInstance()
-	defer res.Close()
-	db.Migrate(res)
-	q := db.Query{Category: "test_category", Query: "doorcode", Response: "HAHAHAA"}
-	db.Insert(res, &q)
+	entityManager := db.GetInstance()
+	db.Migrate(entityManager)
+	// q := db.Query{Category: "test_category", Query: "doorcode", Response: "HAHAHAA"}
+	// db.Insert(res, &q)
 	go spawnServer()
 	go initiateGetRequest()
 	go rtm.ManageConnection()
@@ -62,7 +71,7 @@ func main() {
 	}
 }
 
-func initialize(logger *log.Logger) *slack.Client {
+func initializeApi() *slack.Client {
 	var key string
 	key = os.Getenv("SLACK_KEY")
 	logger.Print("KEY: " + key)
