@@ -16,7 +16,6 @@ import (
 	"github.com/dulwin/ezebot/utils"
 )
 
-
 var logger *log.Logger
 var rtm *slack.RTM
 var api *slack.Client
@@ -72,7 +71,7 @@ func main() {
 	entityManager := db.GetInstance()
 	defer entityManager.Close()
 	entityManager.Migrate()
-	
+
 	// q := models.Query{Category: "test_category", Query: "doorcode", Response: "HAHAHAA"}
 	// entityManager.Insert(&q)
 

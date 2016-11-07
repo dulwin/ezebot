@@ -6,12 +6,12 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
 
+	"github.com/dulwin/ezebot/models"
 	"github.com/dulwin/ezebot/utils"
-    "github.com/dulwin/ezebot/models"
 )
 
 type EntityManager struct {
-    instance *gorm.DB
+	instance *gorm.DB
 }
 
 func GetInstance() *EntityManager {
@@ -22,7 +22,7 @@ func GetInstance() *EntityManager {
 }
 
 func (e *EntityManager) Close() {
-    e.instance.Close()
+	e.instance.Close()
 }
 
 func (e *EntityManager) Migrate() {
