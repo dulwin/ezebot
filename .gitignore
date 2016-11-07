@@ -4,3 +4,4 @@ vendor/*/
 target/
 .env
 gin-bin
+ezebot

@@ -3,6 +3,18 @@
 	"ignore": "test",
 	"package": [
 		{
+			"checksumSHA1": "Z26O5ewa2aY50gtpqJ6Gm06OpLs=",
+			"path": "github.com/codegangsta/gin",
+			"revision": "ec8423f9fe31579e1a8bedb17361dce22eb557ca",
+			"revisionTime": "2016-10-10T18:16:14Z"
+		},
+		{
+			"checksumSHA1": "SOsDc39DfjrLbg8tESrvCjb8zGk=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "c1b9cf186e4bcd8e5d566ef43f2ae2dfe22dc34e",
+			"revisionTime": "2016-10-23T14:58:23Z"
+		},
+		{
 			"checksumSHA1": "akn3XR1kSjvell/LbqYkJMRjZrY=",
 			"path": "github.com/nlopes/slack",
 			"revision": "8b6fdb00c8635e19a736c83310e49951fec6802b",
@@ -15,5 +27,5 @@
 			"revisionTime": "2016-09-24T00:10:04Z"
 		}
 	],
-	"rootPath": "github.com/dulwin/ezebot"
+	"rootPath": "ezebot"
 }
